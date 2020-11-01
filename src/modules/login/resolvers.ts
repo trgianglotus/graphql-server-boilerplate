@@ -1,22 +1,26 @@
-import * as bcrypt from "bcryptjs";
+import * as bcrypt from 'bcryptjs';
 
-import { ResolverMap } from "../../types/graphql-utils";
-import { User } from "../../entity/User";
-import { invalidLogin, confirmEmailError } from "./errorMessages";
+import { ResolverMap } from '../../types/graphql-utils';
+import { User } from '../../entity/User';
+import { invalidLogin, confirmEmailError } from './errorMessages';
 
 const errorResponse = [
   {
-    path: "email",
-    message: invalidLogin
-  }
+    path: 'email',
+    message: invalidLogin,
+  },
 ];
 
 export const resolvers: ResolverMap = {
   Query: {
-    bye2: () => "bye"
+    bye2: () => 'bye',
   },
   Mutation: {
-    login: async (_, { email, password }: GQL.ILoginOnMutationArguments) => {
+    login: async (
+      _,
+      { email, password }: GQL.ILoginOnMutationArguments,
+      { session }
+    ) => {
       const user = await User.findOne({ where: { email } });
 
       if (!user) {
@@ -26,9 +30,9 @@ export const resolvers: ResolverMap = {
       if (!user.confirmed) {
         return [
           {
-            path: "email",
-            message: confirmEmailError
-          }
+            path: 'email',
+            message: confirmEmailError,
+          },
         ];
       }
 
@@ -38,7 +42,10 @@ export const resolvers: ResolverMap = {
         return errorResponse;
       }
 
+      // login successful
+      session.userId = user.id;
+
       return null;
-    }
-  }
+    },
+  },
 };
