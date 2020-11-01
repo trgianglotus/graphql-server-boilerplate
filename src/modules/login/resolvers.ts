@@ -2,7 +2,11 @@ import * as bcrypt from 'bcryptjs';
 
 import { ResolverMap } from '../../types/graphql-utils';
 import { User } from '../../entity/User';
-import { invalidLogin, confirmEmailError, forgotPasswordLockedError } from './errorMessages';
+import {
+  invalidLogin,
+  confirmEmailError,
+  forgotPasswordLockedError,
+} from './errorMessages';
 import { userSessionIdPrefix } from '../../constants';
 
 const errorResponse = [
@@ -46,7 +50,7 @@ export const resolvers: ResolverMap = {
         ];
       }
 
-      const valid = await bcrypt.compare(password, user.password);
+      const valid = await bcrypt.compare(password, user.password as string);
 
       if (!valid) {
         return errorResponse;

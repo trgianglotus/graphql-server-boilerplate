@@ -7,7 +7,6 @@
     "username": "nguyengiang",
     "password": "postgres",
     "database": "graphql",
-    "dropSchema": true,
     "synchronize": true,
     "logging": true,
     "entities": ["src/entity/**/*.ts"],
